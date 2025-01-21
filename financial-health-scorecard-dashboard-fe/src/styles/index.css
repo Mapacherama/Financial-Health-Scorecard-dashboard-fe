@@ -1,19 +1,126 @@
+/* Global Styles: Minimalistic and Elegant */
+
+/* Base Styles */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #f9f9f9;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  background-color: #f9f9f9; /* Light background for a balanced, natural feel */
+  color: #333; /* Neutral, readable text color */
+  line-height: 1.6; /* Improve readability with balanced spacing */
+  transition: background-color 0.3s, color 0.3s; /* Smooth transitions for theme switching */
 }
 
-h1, h2, h3 {
-  color: #333;
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  color: #2c3e50; /* A slightly darker shade for headings */
+  font-weight: 600; /* Medium-bold for emphasis */
+  margin: 1rem 0; /* Consistent spacing */
+  line-height: 1.4; /* Improve readability */
 }
 
+/* Paragraphs */
+p {
+  font-size: 1rem;
+  margin: 0.8rem 0;
+  color: #444; /* Softer color for paragraphs */
+}
+
+/* Lists */
 ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 ul li {
   margin: 0.5rem 0;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s;
   cursor: pointer;
+}
+
+ul li:hover {
+  background-color: rgba(76, 175, 80, 0.1); /* Subtle hover effect for list items */
+}
+
+/* Links */
+a {
+  text-decoration: none;
+  color: #3498db; /* A calming blue for links */
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: #1d6fa5; /* Slightly darker blue on hover */
+}
+
+/* Buttons */
+button {
+  font-family: inherit;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #4caf50; /* Natural green for positive actions */
+  color: white;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+button:hover {
+  background-color: #45a049; /* Slightly darker green on hover */
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Inputs and Forms */
+input, select, textarea {
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.6rem 0.8rem;
+  margin: 0.5rem 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  color: #333;
+  outline: none;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #16a085; /* Natural green for focus */
+  background-color: white;
+}
+
+/* Containers */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* Dark Mode */
+body.dark {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+body.dark h1, body.dark h2, body.dark h3, body.dark h4, body.dark h5, body.dark h6 {
+  color: #ffffff;
+}
+
+body.dark a {
+  color: #58a6ff;
+}
+
+body.dark button {
+  background-color: #37474f;
+}
+
+body.dark button:hover {
+  background-color: #455a64;
 }
