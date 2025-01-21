@@ -61,9 +61,10 @@ const Dashboard = () => {
       <h2 className="dashboard-title">Dashboard</h2>
 
       {/* Filter Section */}
+      {/* Filter Section */}
       <div className="filter-container">
         <div>
-          <label>Start Date: </label>
+          <label>Start Date:</label>
           <DatePicker
             selected={startDate}
             onChange={(date) => setStartDate(date)}
@@ -71,7 +72,7 @@ const Dashboard = () => {
           />
         </div>
         <div>
-          <label>End Date: </label>
+          <label>End Date:</label>
           <DatePicker
             selected={endDate}
             onChange={(date) => setEndDate(date)}
@@ -79,17 +80,20 @@ const Dashboard = () => {
           />
         </div>
         <div>
-          <label>Category: </label>
+          <label>Category:</label>
           <select value={category} onChange={(e) => setCategory(e.target.value)}>
             <option value="">All</option>
             <option value="income">Income</option>
             <option value="expense">Expense</option>
           </select>
         </div>
-        <button onClick={handleFilter} className="filter-button">
-          Apply Filters
-        </button>
+        <div>
+          <button onClick={handleFilter} className="filter-button">
+            Apply Filters
+          </button>
+        </div>
       </div>
+
 
       {/* Display Financial Summary */}
       <div className="summary-card">
