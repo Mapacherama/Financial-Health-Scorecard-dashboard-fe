@@ -18,7 +18,7 @@ interface ThemeProviderProps {
 }
 
 // Create the ThemeProvider
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
+export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }): JSX.Element => {
   const [theme, setTheme] = useState<string>(() => localStorage.getItem("theme") || "light");
 
   const toggleTheme = (newTheme: string) => {
