@@ -6,6 +6,8 @@ import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Reports from "./pages/Reports/Reports";
 import Settings from "./pages/Settings/Settings";
+import "./styles/index.css";
+import "./styles/dashboard.css";
 
 const App: React.FC = () => {
   const { theme } = useTheme();

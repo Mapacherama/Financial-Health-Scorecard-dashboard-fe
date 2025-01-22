@@ -157,5 +157,12 @@ body {
   .filter-button:active {
     transform: translateY(0);
   }
+
+  .charts-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
   
   
