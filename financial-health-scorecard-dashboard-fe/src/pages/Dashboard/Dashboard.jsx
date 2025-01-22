@@ -4,6 +4,22 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./dashboard.css";
 
+// Import Chart.js components
+import { Line, Pie } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from "chart.js";
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement);
+
 const Dashboard = () => {
   const [financialData, setFinancialData] = useState([]);
   const [startDate, setStartDate] = useState(null);
@@ -56,11 +72,37 @@ const Dashboard = () => {
 
   if (loading) return <p>Loading...</p>;
 
+  const trendsData = {
+    labels: trends.map((trend) => trend.month), // X-axis labels
+    datasets: [
+      {
+        label: "Monthly Total ($)",
+        data: trends.map((trend) => trend.total), // Y-axis data
+        borderColor: "rgba(75,192,192,1)",
+        backgroundColor: "rgba(75,192,192,0.2)",
+        tension: 0.4,
+      },
+    ],
+  };
+
+  const categoryData = {
+    labels: ["Income", "Expense"],
+    datasets: [
+      {
+        data: [
+          summary?.total_income.toFixed(2) || 0,
+          Math.abs(summary?.total_expenses.toFixed(2) || 0),
+        ],
+        backgroundColor: ["#36A2EB", "#FF6384"],
+        hoverBackgroundColor: ["#36A2EB", "#FF6384"],
+      },
+    ],
+  };
+
   return (
     <div className="dashboard-container">
       <h2 className="dashboard-title">Dashboard</h2>
 
-      {/* Filter Section */}
       {/* Filter Section */}
       <div className="filter-container">
         <div>
@@ -94,34 +136,17 @@ const Dashboard = () => {
         </div>
       </div>
 
+      {/* Charts */}
+      <div className="charts-container">
+        <div className="chart-wrapper">
+          <h3>Monthly Trends</h3>
+          <Line data={trendsData} />
+        </div>
 
-      {/* Display Financial Summary */}
-      <div className="summary-card">
-        <div className="summary-item">
-          <h3>Total Income</h3>
-          <p>${summary.total_income.toFixed(2)}</p>
+        <div className="chart-wrapper">
+          <h3>Category Distribution</h3>
+          <Pie data={categoryData} />
         </div>
-        <div className="summary-item">
-          <h3>Total Expenses</h3>
-          <p>${summary.total_expenses.toFixed(2)}</p>
-        </div>
-        <div className="summary-item">
-          <h3>Net Balance</h3>
-          <p>${summary.net_balance.toFixed(2)}</p>
-        </div>
-      </div>
-
-      {/* Display Monthly Trends */}
-      <div className="trends-container">
-        <h3>Monthly Trends</h3>
-        <ul className="trends-list">
-          {trends.map((trend, index) => (
-            <li key={index}>
-              <span className="month">{trend.month}</span>
-              <span className="total">${trend.total.toFixed(2)}</span>
-            </li>
-          ))}
-        </ul>
       </div>
 
       {/* Display Filtered Financial Data */}
