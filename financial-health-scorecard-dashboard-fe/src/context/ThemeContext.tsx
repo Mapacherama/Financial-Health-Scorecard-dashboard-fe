@@ -1,4 +1,5 @@
-import React, { createContext, useState, ReactNode, useContext } from "react";
+import React, { createContext, useState, ReactNode, useContext, useEffect } from "react";
+import { lightTheme, darkTheme } from "../styles/theme";
 
 // Define the shape of the ThemeContext
 interface ThemeContextType {
@@ -9,7 +10,7 @@ interface ThemeContextType {
 // Create the ThemeContext with a default value
 export const ThemeContext = createContext<ThemeContextType>({
   theme: "light",
-  toggleTheme: () => {}, // Default implementation for toggleTheme
+  toggleTheme: () => {},
 });
 
 // Define the props for the ThemeProvider
@@ -20,6 +21,13 @@ interface ThemeProviderProps {
 // Create the ThemeProvider
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }): JSX.Element => {
   const [theme, setTheme] = useState<string>(() => localStorage.getItem("theme") || "light");
+
+  useEffect(() => {
+    const currentTheme = theme === "light" ? lightTheme : darkTheme;
+    Object.entries(currentTheme).forEach(([key, value]) => {
+      document.documentElement.style.setProperty(`--${key}`, value);
+    });
+  }, [theme]);
 
   const toggleTheme = (newTheme: string) => {
     setTheme(newTheme);

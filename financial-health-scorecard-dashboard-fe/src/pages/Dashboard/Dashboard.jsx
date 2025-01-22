@@ -100,7 +100,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-container" style={{ backgroundColor: "var(--background)", color: "var(--text)" }}>
       <h2 className="dashboard-title">Dashboard</h2>
 
       {/* Filter Section */}
@@ -111,6 +111,12 @@ const Dashboard = () => {
             selected={startDate}
             onChange={(date) => setStartDate(date)}
             placeholderText="Select start date"
+            className="datepicker-input"
+            style={{
+              backgroundColor: "var(--inputBg)",
+              color: "var(--text)",
+              border: "1px solid var(--border)"
+            }}
           />
         </div>
         <div>
@@ -119,38 +125,62 @@ const Dashboard = () => {
             selected={endDate}
             onChange={(date) => setEndDate(date)}
             placeholderText="Select end date"
+            className="datepicker-input"
+            style={{
+              backgroundColor: "var(--inputBg)",
+              color: "var(--text)",
+              border: "1px solid var(--border)"
+            }}
           />
         </div>
         <div>
           <label>Category:</label>
-          <select value={category} onChange={(e) => setCategory(e.target.value)}>
+          <select 
+            value={category} 
+            onChange={(e) => setCategory(e.target.value)}
+            style={{
+              backgroundColor: "var(--inputBg)",
+              color: "var(--text)",
+              border: "1px solid var(--border)",
+              padding: "0.5rem",
+              borderRadius: "5px"
+            }}
+          >
             <option value="">All</option>
             <option value="income">Income</option>
             <option value="expense">Expense</option>
           </select>
         </div>
         <div>
-          <button onClick={handleFilter} className="filter-button">
+          <button 
+            onClick={handleFilter} 
+            className="filter-button"
+            style={{
+              backgroundColor: "var(--buttonBg)",
+              color: "var(--text)",
+              border: "1px solid var(--border)"
+            }}
+          >
             Apply Filters
           </button>
         </div>
       </div>
 
       {/* Charts */}
-      <div className="charts-container">
-        <div className="chart-wrapper">
+      <div className="charts-container" style={{ backgroundColor: "var(--background)" }}>
+        <div className="chart-wrapper" style={{ backgroundColor: "var(--inputBg)", border: "1px solid var(--border)" }}>
           <h3>Monthly Trends</h3>
           <Line data={trendsData} />
         </div>
 
-        <div className="chart-wrapper">
+        <div className="chart-wrapper" style={{ backgroundColor: "var(--inputBg)", border: "1px solid var(--border)" }}>
           <h3>Category Distribution</h3>
           <Pie data={categoryData} />
         </div>
       </div>
 
       {/* Display Filtered Financial Data */}
-      <div className="financial-data-container">
+      <div className="financial-data-container" style={{ backgroundColor: "var(--inputBg)", border: "1px solid var(--border)" }}>
         <h3>Filtered Financial Data</h3>
         <ul className="financial-data-list">
           {financialData.map((item, index) => (
