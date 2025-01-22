@@ -128,22 +128,59 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="dashboard-container" style={{ backgroundColor: "var(--background)", color: "var(--text)" }}>
+    <div
+      className="dashboard-container"
+      style={{ backgroundColor: "var(--background)", color: "var(--text)" }}
+    >
       <h2 className="dashboard-title">Dashboard</h2>
-
+  
       {/* Charts */}
-      <div className="charts-container" style={{ backgroundColor: "var(--background)" }}>
-        <div className="chart-wrapper" style={{ backgroundColor: "var(--inputBg)", border: "1px solid var(--border)" }}>
+      <div
+        className="charts-container"
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          gap: "20px",
+          backgroundColor: "var(--background)",
+        }}
+      >
+        <div
+          className="chart-wrapper"
+          style={{
+            flex: "1 1 calc(33.33% - 20px)", // Makes each chart take 1/3 of the row, minus gap
+            backgroundColor: "var(--inputBg)",
+            border: "1px solid var(--border)",
+            padding: "20px",
+          }}
+        >
           <h3>Monthly Trends</h3>
           <Line data={trendsData} />
         </div>
-
-        <div className="chart-wrapper" style={{ backgroundColor: "var(--inputBg)", border: "1px solid var(--border)" }}>
+  
+        <div
+          className="chart-wrapper"
+          style={{
+            flex: "1 1 calc(33.33% - 20px)",
+            backgroundColor: "var(--inputBg)",
+            border: "1px solid var(--border)",
+            padding: "20px",
+          }}
+        >
           <h3>Category Distribution</h3>
           <Pie data={categoryData} />
         </div>
-
-        <div className="chart-wrapper" style={{ backgroundColor: "var(--inputBg)", border: "1px solid var(--border)" }}>
+  
+        <div
+          className="chart-wrapper"
+          style={{
+            flex: "1 1 calc(33.33% - 20px)",
+            backgroundColor: "var(--inputBg)",
+            border: "1px solid var(--border)",
+            padding: "20px",
+          }}
+        >
           <h3>Top Transactions</h3>
           {topTransactions ? (
             <Bar data={topTransactionsData} />
@@ -152,8 +189,30 @@ const Dashboard = () => {
           )}
         </div>
       </div>
+  
+      {/* Display Filtered Financial Data */}
+      <div
+        className="financial-data-container"
+        style={{
+          backgroundColor: "var(--inputBg)",
+          border: "1px solid var(--border)",
+          padding: "20px",
+          marginTop: "20px", // Adds some space between the charts and this section
+        }}
+      >
+        <h3>Filtered Financial Data</h3>
+        <ul className="financial-data-list">
+          {financialData.map((item, index) => (
+            <li key={index}>
+              <span>{item.date} - </span>
+              <span>{item.category} - </span>
+              <span>${item.amount.toFixed(2)}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
-  );
+  );  
 };
 
 export default Dashboard;
