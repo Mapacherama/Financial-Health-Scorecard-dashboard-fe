@@ -4,20 +4,31 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 // Import Chart.js components
-import { Line, Pie } from "react-chartjs-2";
+import { Line, Pie, Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
+  BarElement,
   Title,
   Tooltip,
   Legend,
   ArcElement,
 } from "chart.js";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, ArcElement);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement
+);
 
 const Dashboard = () => {
   const [financialData, setFinancialData] = useState([]);
@@ -26,6 +37,7 @@ const Dashboard = () => {
   const [category, setCategory] = useState("");
   const [summary, setSummary] = useState(null);
   const [trends, setTrends] = useState([]);
+  const [topTransactions, setTopTransactions] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // Fetch filtered data
@@ -39,10 +51,6 @@ const Dashboard = () => {
           category,
         },
       });
-      console.log("Start Date:", startDate);
-      console.log("End Date:", endDate);
-      console.log("Category:", category);
-      console.log("Response Data:", response.data);
       setFinancialData(response.data);
     } catch (error) {
       console.error("Error fetching filtered data:", error);
@@ -51,7 +59,7 @@ const Dashboard = () => {
     }
   };
 
-  // Fetch summary and trends data
+  // Fetch summary, trends, and top transactions data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -60,6 +68,9 @@ const Dashboard = () => {
 
         const trendsResponse = await axios.get("http://127.0.0.1:5000/api/trends");
         setTrends(trendsResponse.data);
+
+        const topTransactionsResponse = await axios.get("http://127.0.0.1:5000/api/top_transactions");
+        setTopTransactions(topTransactionsResponse.data);
 
         handleFilter();
 
@@ -101,72 +112,24 @@ const Dashboard = () => {
     ],
   };
 
+  const topTransactionsData = {
+    labels: ["Income", "Expense"],
+    datasets: [
+      {
+        label: "Amount ($)",
+        data: [
+          topTransactions?.top_income?.amount || 0,
+          Math.abs(topTransactions?.top_expense?.amount || 0),
+        ],
+        backgroundColor: ["#4CAF50", "#F44336"],
+        hoverBackgroundColor: ["#66BB6A", "#EF5350"],
+      },
+    ],
+  };
+
   return (
     <div className="dashboard-container" style={{ backgroundColor: "var(--background)", color: "var(--text)" }}>
       <h2 className="dashboard-title">Dashboard</h2>
-
-      {/* Filter Section */}
-      <div className="filter-container">
-        <div>
-          <label>Start Date:</label>
-          <DatePicker
-            selected={startDate}
-            onChange={(date) => setStartDate(date)}
-            placeholderText="Select start date"
-            className="datepicker-input"
-            style={{
-              backgroundColor: "var(--inputBg)",
-              color: "var(--text)",
-              border: "1px solid var(--border)"
-            }}
-          />
-        </div>
-        <div>
-          <label>End Date:</label>
-          <DatePicker
-            selected={endDate}
-            onChange={(date) => setEndDate(date)}
-            placeholderText="Select end date"
-            className="datepicker-input"
-            style={{
-              backgroundColor: "var(--inputBg)",
-              color: "var(--text)",
-              border: "1px solid var(--border)"
-            }}
-          />
-        </div>
-        <div>
-          <label>Category:</label>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            style={{
-              backgroundColor: "var(--inputBg)",
-              color: "var(--text)",
-              border: "1px solid var(--border)",
-              padding: "0.5rem",
-              borderRadius: "5px"
-            }}
-          >
-            <option value="">All</option>
-            <option value="income">Income</option>
-            <option value="expense">Expense</option>
-          </select>
-        </div>
-        <div>
-          <button
-            onClick={handleFilter}
-            className="filter-button"
-            style={{
-              backgroundColor: "var(--buttonBg)",
-              color: "var(--text)",
-              border: "1px solid var(--border)"
-            }}
-          >
-            Apply Filters
-          </button>
-        </div>
-      </div>
 
       {/* Charts */}
       <div className="charts-container" style={{ backgroundColor: "var(--background)" }}>
@@ -179,20 +142,15 @@ const Dashboard = () => {
           <h3>Category Distribution</h3>
           <Pie data={categoryData} />
         </div>
-      </div>
 
-      {/* Display Filtered Financial Data */}
-      <div className="financial-data-container" style={{ backgroundColor: "var(--inputBg)", border: "1px solid var(--border)" }}>
-        <h3>Filtered Financial Data</h3>
-        <ul className="financial-data-list">
-          {financialData.map((item, index) => (
-            <li key={index}>
-              <span>{item.date} - </span>
-              <span>{item.category} - </span>
-              <span>${item.amount.toFixed(2)}</span>
-            </li>
-          ))}
-        </ul>
+        <div className="chart-wrapper" style={{ backgroundColor: "var(--inputBg)", border: "1px solid var(--border)" }}>
+          <h3>Top Transactions</h3>
+          {topTransactions ? (
+            <Bar data={topTransactionsData} />
+          ) : (
+            <p>Loading Top Transactions...</p>
+          )}
+        </div>
       </div>
     </div>
   );
