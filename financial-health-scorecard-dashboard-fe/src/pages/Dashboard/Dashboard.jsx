@@ -39,6 +39,10 @@ const Dashboard = () => {
           category,
         },
       });
+      console.log("Start Date:", startDate);
+      console.log("End Date:", endDate);
+      console.log("Category:", category);
+      console.log("Response Data:", response.data);
       setFinancialData(response.data);
     } catch (error) {
       console.error("Error fetching filtered data:", error);
@@ -57,8 +61,7 @@ const Dashboard = () => {
         const trendsResponse = await axios.get("http://127.0.0.1:5000/api/trends");
         setTrends(trendsResponse.data);
 
-        const financialResponse = await axios.get("http://127.0.0.1:5000/api/financial_data");
-        setFinancialData(financialResponse.data);
+        handleFilter();
 
         setLoading(false);
       } catch (error) {
@@ -134,8 +137,8 @@ const Dashboard = () => {
         </div>
         <div>
           <label>Category:</label>
-          <select 
-            value={category} 
+          <select
+            value={category}
             onChange={(e) => setCategory(e.target.value)}
             style={{
               backgroundColor: "var(--inputBg)",
@@ -151,8 +154,8 @@ const Dashboard = () => {
           </select>
         </div>
         <div>
-          <button 
-            onClick={handleFilter} 
+          <button
+            onClick={handleFilter}
             className="filter-button"
             style={{
               backgroundColor: "var(--buttonBg)",
