@@ -38,6 +38,7 @@ const Dashboard = () => {
   const [summary, setSummary] = useState(null);
   const [trends, setTrends] = useState([]);
   const [topTransactions, setTopTransactions] = useState(null);
+  const [forecast, setForecast] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Fetch filtered data
@@ -59,7 +60,7 @@ const Dashboard = () => {
     }
   };
 
-  // Fetch summary, trends, and top transactions data
+  // Fetch summary, trends, top transactions, and forecast data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -71,6 +72,9 @@ const Dashboard = () => {
 
         const topTransactionsResponse = await axios.get("http://127.0.0.1:5000/api/top_transactions");
         setTopTransactions(topTransactionsResponse.data);
+
+        const forecastResponse = await axios.get("http://127.0.0.1:5000/api/forecast");
+        setForecast(forecastResponse.data);
 
         handleFilter();
 
@@ -93,6 +97,33 @@ const Dashboard = () => {
         data: trends.map((trend) => trend.total), // Y-axis data
         borderColor: "rgba(75,192,192,1)",
         backgroundColor: "rgba(75,192,192,0.2)",
+        tension: 0.4,
+      },
+    ],
+  };
+
+  const forecastedData = {
+    labels: [
+      ...trends.map((trend) => trend.month), // Historical months
+      ...forecast.map((_, index) => `Month ${index + 1}`), // Forecasted months
+    ],
+    datasets: [
+      {
+        label: "Historical Data",
+        data: trends.map((trend) => trend.total), // Historical data
+        borderColor: "rgba(75,192,192,1)",
+        backgroundColor: "rgba(75,192,192,0.2)",
+        tension: 0.4,
+      },
+      {
+        label: "Forecasted Data",
+        data: [
+          ...new Array(trends.length).fill(null), // Fill historical data with null
+          ...forecast.map((f) => f.predicted_total), // Forecasted data
+        ],
+        borderColor: "rgba(255,99,132,1)",
+        backgroundColor: "rgba(255,99,132,0.2)",
+        borderDash: [5, 5], // Dashed line for forecast
         tension: 0.4,
       },
     ],
@@ -149,14 +180,14 @@ const Dashboard = () => {
         <div
           className="chart-wrapper"
           style={{
-            flex: "1 1 calc(33.33% - 20px)", // Makes each chart take 1/3 of the row, minus gap
+            flex: "1 1 calc(33.33% - 20px)",
             backgroundColor: "var(--inputBg)",
             border: "1px solid var(--border)",
             padding: "20px",
           }}
         >
-          <h3>Monthly Trends</h3>
-          <Line data={trendsData} />
+          <h3>Forecasted Financial Trends</h3>
+          <Line data={forecastedData} />
         </div>
   
         <div
