@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 // Import Chart.js components
 import { Line, Pie, Bar } from "react-chartjs-2";
@@ -40,10 +42,12 @@ const Dashboard = () => {
   const [topTransactions, setTopTransactions] = useState(null);
   const [forecast, setForecast] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Fetch filtered data
   const handleFilter = async () => {
     setLoading(true);
+    setError(null);
     try {
       const response = await axios.get("http://127.0.0.1:5000/api/financial_data", {
         params: {
@@ -55,6 +59,7 @@ const Dashboard = () => {
       setFinancialData(response.data);
     } catch (error) {
       console.error("Error fetching filtered data:", error);
+      setError("Failed to fetch financial data. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -63,6 +68,8 @@ const Dashboard = () => {
   // Fetch summary, trends, top transactions, and forecast data
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const summaryResponse = await axios.get("http://127.0.0.1:5000/api/summary");
         setSummary(summaryResponse.data);
@@ -77,17 +84,16 @@ const Dashboard = () => {
         setForecast(forecastResponse.data);
 
         handleFilter();
-
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching data from the API", error);
+        setError("Failed to load dashboard data. Please refresh the page.");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
   }, []);
-
-  if (loading) return <p>Loading...</p>;
 
   const trendsData = {
     labels: trends.map((trend) => trend.month), // X-axis labels
@@ -134,8 +140,8 @@ const Dashboard = () => {
     datasets: [
       {
         data: [
-          summary?.total_income.toFixed(2) || 0,
-          Math.abs(summary?.total_expenses.toFixed(2) || 0),
+          summary?.total_income?.toFixed(2) || 0,
+          Math.abs(summary?.total_expenses?.toFixed(2) || 0),
         ],
         backgroundColor: ["#36A2EB", "#FF6384"],
         hoverBackgroundColor: ["#36A2EB", "#FF6384"],
@@ -164,86 +170,107 @@ const Dashboard = () => {
       style={{ backgroundColor: "var(--background)", color: "var(--text)" }}
     >
       <h2 className="dashboard-title">Dashboard</h2>
-  
-      {/* Charts */}
-      <div
-        className="charts-container"
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          gap: "20px",
-          backgroundColor: "var(--background)",
-        }}
-      >
-        <div
-          className="chart-wrapper"
-          style={{
-            flex: "1 1 calc(33.33% - 20px)",
-            backgroundColor: "var(--inputBg)",
-            border: "1px solid var(--border)",
-            padding: "20px",
-          }}
-        >
-          <h3>Forecasted Financial Trends</h3>
-          <Line data={forecastedData} />
-        </div>
-  
-        <div
-          className="chart-wrapper"
-          style={{
-            flex: "1 1 calc(33.33% - 20px)",
-            backgroundColor: "var(--inputBg)",
-            border: "1px solid var(--border)",
-            padding: "20px",
-          }}
-        >
-          <h3>Category Distribution</h3>
-          <Pie data={categoryData} />
-        </div>
-  
-        <div
-          className="chart-wrapper"
-          style={{
-            flex: "1 1 calc(33.33% - 20px)",
-            backgroundColor: "var(--inputBg)",
-            border: "1px solid var(--border)",
-            padding: "20px",
-          }}
-        >
-          <h3>Top Transactions</h3>
-          {topTransactions ? (
-            <Bar data={topTransactionsData} />
-          ) : (
-            <p>Loading Top Transactions...</p>
-          )}
-        </div>
-      </div>
-  
-      {/* Display Filtered Financial Data */}
-      <div
-        className="financial-data-container"
-        style={{
-          backgroundColor: "var(--inputBg)",
-          border: "1px solid var(--border)",
-          padding: "20px",
-          marginTop: "20px", // Adds some space between the charts and this section
-        }}
-      >
-        <h3>Filtered Financial Data</h3>
-        <ul className="financial-data-list">
-          {financialData.map((item, index) => (
-            <li key={index}>
-              <span>{item.date} - </span>
-              <span>{item.category} - </span>
-              <span>${item.amount.toFixed(2)}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+
+      {error && (
+        <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>
+      )}
+
+      {loading ? (
+        <Skeleton count={5} height={30} />
+      ) : (
+        <>
+          {/* Charts */}
+          <div
+            className="charts-container"
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              gap: "20px",
+            }}
+          >
+            <div
+              className="chart-wrapper"
+              style={{
+                flex: "1 1 calc(33.33% - 20px)",
+                backgroundColor: "var(--inputBg)",
+                border: "1px solid var(--border)",
+                padding: "20px",
+              }}
+            >
+              <h3>Forecasted Financial Trends</h3>
+              {trends.length > 0 ? (
+                <Line data={forecastedData} />
+              ) : (
+                <p>No data available for trends.</p>
+              )}
+            </div>
+
+            <div
+              className="chart-wrapper"
+              style={{
+                flex: "1 1 calc(33.33% - 20px)",
+                backgroundColor: "var(--inputBg)",
+                border: "1px solid var(--border)",
+                padding: "20px",
+              }}
+            >
+              <h3>Category Distribution</h3>
+              {summary ? (
+                <Pie data={categoryData} />
+              ) : (
+                <p>No summary data available.</p>
+              )}
+            </div>
+
+            <div
+              className="chart-wrapper"
+              style={{
+                flex: "1 1 calc(33.33% - 20px)",
+                backgroundColor: "var(--inputBg)",
+                border: "1px solid var(--border)",
+                padding: "20px",
+              }}
+            >
+              <h3>Top Transactions</h3>
+              {topTransactions && (topTransactions.top_income || topTransactions.top_expense) ? (
+                <Bar data={topTransactionsData} />
+              ) : (
+                <p>No data available for top transactions.</p>
+              )}
+            </div>
+          </div>
+
+          {/* Display Filtered Financial Data */}
+          <div
+            className="financial-data-container"
+            style={{
+              backgroundColor: "var(--inputBg)",
+              border: "1px solid var(--border)",
+              padding: "20px",
+              marginTop: "20px",
+            }}
+          >
+            <h3>Filtered Financial Data</h3>
+            {financialData.length > 0 ? (
+              <ul className="financial-data-list">
+                {financialData.map((item, index) => (
+                  <li key={index}>
+                    <span>{item.date} - </span>
+                    <span>{item.category} - </span>
+                    <span>${item.amount.toFixed(2)}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No financial data available for the selected filters.</p>
+            )}
+          </div>
+        </>
+      )}
     </div>
-  );  
+  );
 };
 
 export default Dashboard;
