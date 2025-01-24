@@ -41,6 +41,7 @@ const Dashboard = () => {
   const [trends, setTrends] = useState([]);
   const [topTransactions, setTopTransactions] = useState(null);
   const [forecast, setForecast] = useState([]);
+  const [recurringTransactions, setRecurringTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -65,7 +66,7 @@ const Dashboard = () => {
     }
   };
 
-  // Fetch summary, trends, top transactions, and forecast data
+  // Fetch summary, trends, top transactions, forecast, and recurring transactions data
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -82,6 +83,9 @@ const Dashboard = () => {
 
         const forecastResponse = await axios.get("http://127.0.0.1:5000/api/forecast");
         setForecast(forecastResponse.data);
+
+        const recurringResponse = await axios.get("http://127.0.0.1:5000/api/recurring_transactions");
+        setRecurringTransactions(recurringResponse.data);
 
         handleFilter();
       } catch (error) {
@@ -164,6 +168,26 @@ const Dashboard = () => {
     ],
   };
 
+  const recurringTransactionsData = {
+    labels: recurringTransactions.map((item) => item.category),
+    datasets: [
+      {
+        label: "Occurrences",
+        data: recurringTransactions.map((item) => item.occurrences),
+        backgroundColor: "rgba(75,192,192,0.6)",
+        borderColor: "rgba(75,192,192,1)",
+        borderWidth: 1,
+      },
+      {
+        label: "Total Amount ($)",
+        data: recurringTransactions.map((item) => item.total),
+        backgroundColor: "rgba(255,99,132,0.6)",
+        borderColor: "rgba(255,99,132,1)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
   return (
     <div
       className="dashboard-container"
@@ -238,6 +262,23 @@ const Dashboard = () => {
                 <Bar data={topTransactionsData} />
               ) : (
                 <p>No data available for top transactions.</p>
+              )}
+            </div>
+
+            <div
+              className="chart-wrapper"
+              style={{
+                flex: "1 1 calc(33.33% - 20px)",
+                backgroundColor: "var(--inputBg)",
+                border: "1px solid var(--border)",
+                padding: "20px",
+              }}
+            >
+              <h3>Recurring Transactions</h3>
+              {recurringTransactions.length > 0 ? (
+                <Bar data={recurringTransactionsData} />
+              ) : (
+                <p>No data available for recurring transactions.</p>
               )}
             </div>
           </div>
