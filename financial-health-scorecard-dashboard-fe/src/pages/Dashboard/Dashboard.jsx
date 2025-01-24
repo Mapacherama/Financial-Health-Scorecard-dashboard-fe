@@ -42,6 +42,7 @@ const Dashboard = () => {
   const [topTransactions, setTopTransactions] = useState(null);
   const [forecast, setForecast] = useState([]);
   const [recurringTransactions, setRecurringTransactions] = useState([]);
+  const [savingsRate, setSavingsRate] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -66,7 +67,7 @@ const Dashboard = () => {
     }
   };
 
-  // Fetch summary, trends, top transactions, forecast, and recurring transactions data
+  // Fetch summary, trends, top transactions, forecast, recurring transactions, and savings rate data
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -86,6 +87,9 @@ const Dashboard = () => {
 
         const recurringResponse = await axios.get("http://127.0.0.1:5000/api/recurring_transactions");
         setRecurringTransactions(recurringResponse.data);
+
+        const savingsRateResponse = await axios.get("http://127.0.0.1:5000/api/savings_rate");
+        setSavingsRate(savingsRateResponse.data);
 
         handleFilter();
       } catch (error) {
@@ -203,32 +207,65 @@ const Dashboard = () => {
         <Skeleton count={5} height={30} />
       ) : (
         <>
+          {/* Savings Rate Widget */}
+          <div
+            className="savings-rate-widget"
+            style={{
+              backgroundColor: "var(--inputBg)",
+              border: "1px solid var(--border)",
+              padding: "20px",
+              marginBottom: "20px",
+              textAlign: "center",
+              borderRadius: "8px",
+              width: "50%",
+              margin: "0 auto",
+            }}
+          >
+            <h3>Savings Rate</h3>
+            {savingsRate ? (
+              <p
+                style={{
+                  color: savingsRate.savings_rate >= 20 ? "green" : "red",
+                  fontSize: "1.5em",
+                  fontWeight: "bold",
+                }}
+              >
+                {savingsRate.savings_rate.toFixed(2)}%
+              </p>
+            ) : (
+              <p>No data available for savings rate.</p>
+            )}
+          </div>
+
+          {/* Forecasted Financial Trends Chart */}
+          <div
+            className="chart-wrapper"
+            style={{
+              backgroundColor: "var(--inputBg)",
+              border: "1px solid var(--border)",
+              padding: "20px",
+              textAlign: "center",
+              marginBottom: "20px",
+              marginTop: "20px",
+            }}
+          >
+            <h3>Forecasted Financial Trends</h3>
+            {trends.length > 0 ? (
+              <Line data={forecastedData} />
+            ) : (
+              <p>No data available for trends.</p>
+            )}
+          </div>
+
           {/* Charts */}
           <div
             className="charts-container"
             style={{
               display: "grid",
-              gridTemplateColumns: `repeat(${Math.min(3, 4)}, 1fr)`,
+              gridTemplateColumns: `repeat(2, 1fr)`,
               gap: "20px",
             }}
           >
-            <div
-              className="chart-wrapper"
-              style={{
-                backgroundColor: "var(--inputBg)",
-                border: "1px solid var(--border)",
-                padding: "20px",
-                gridColumn: trends.length === 1 ? "1 / -1" : "auto",
-              }}
-            >
-              <h3>Forecasted Financial Trends</h3>
-              {trends.length > 0 ? (
-                <Line data={forecastedData} />
-              ) : (
-                <p>No data available for trends.</p>
-              )}
-            </div>
-
             <div
               className="chart-wrapper"
               style={{
@@ -267,6 +304,7 @@ const Dashboard = () => {
                 backgroundColor: "var(--inputBg)",
                 border: "1px solid var(--border)",
                 padding: "20px",
+                gridColumn: "1 / -1",
               }}
             >
               <h3>Recurring Transactions</h3>
@@ -286,6 +324,7 @@ const Dashboard = () => {
               border: "1px solid var(--border)",
               padding: "20px",
               marginTop: "20px",
+              gridColumn: "1 / -1", // Ensure full width
             }}
           >
             <h3>Filtered Financial Data</h3>
