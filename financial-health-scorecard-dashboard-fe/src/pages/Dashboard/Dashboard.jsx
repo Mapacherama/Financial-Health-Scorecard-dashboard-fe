@@ -207,20 +207,18 @@ const Dashboard = () => {
           <div
             className="charts-container"
             style={{
-              display: "flex",
-              flexWrap: "wrap",
-              flexDirection: "row",
-              justifyContent: "space-between",
+              display: "grid",
+              gridTemplateColumns: `repeat(${Math.min(3, 4)}, 1fr)`,
               gap: "20px",
             }}
           >
             <div
               className="chart-wrapper"
               style={{
-                flex: "1 1 calc(33.33% - 20px)",
                 backgroundColor: "var(--inputBg)",
                 border: "1px solid var(--border)",
                 padding: "20px",
+                gridColumn: trends.length === 1 ? "1 / -1" : "auto",
               }}
             >
               <h3>Forecasted Financial Trends</h3>
@@ -234,7 +232,6 @@ const Dashboard = () => {
             <div
               className="chart-wrapper"
               style={{
-                flex: "1 1 calc(33.33% - 20px)",
                 backgroundColor: "var(--inputBg)",
                 border: "1px solid var(--border)",
                 padding: "20px",
@@ -251,7 +248,6 @@ const Dashboard = () => {
             <div
               className="chart-wrapper"
               style={{
-                flex: "1 1 calc(33.33% - 20px)",
                 backgroundColor: "var(--inputBg)",
                 border: "1px solid var(--border)",
                 padding: "20px",
@@ -268,7 +264,6 @@ const Dashboard = () => {
             <div
               className="chart-wrapper"
               style={{
-                flex: "1 1 calc(33.33% - 20px)",
                 backgroundColor: "var(--inputBg)",
                 border: "1px solid var(--border)",
                 padding: "20px",
