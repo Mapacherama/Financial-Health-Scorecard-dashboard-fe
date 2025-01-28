@@ -43,6 +43,8 @@ const Dashboard = () => {
   const [forecast, setForecast] = useState([]);
   const [recurringTransactions, setRecurringTransactions] = useState([]);
   const [savingsRate, setSavingsRate] = useState(null);
+  const [growthData, setGrowthData] = useState([]);
+  const [investments, setInvestments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -90,6 +92,12 @@ const Dashboard = () => {
 
         const savingsRateResponse = await axios.get("http://127.0.0.1:5000/api/savings_rate");
         setSavingsRate(savingsRateResponse.data);
+
+        const growthResponse = await axios.get("http://127.0.0.1:5000/api/compound_growth");
+        setGrowthData(growthResponse.data.saved_growths);
+
+        const investmentResponse = await axios.get("http://127.0.0.1:5000/api/investment_portfolio");
+        setInvestments(investmentResponse.data.investments);
 
         handleFilter();
       } catch (error) {
@@ -188,6 +196,18 @@ const Dashboard = () => {
         backgroundColor: "rgba(255,99,132,0.6)",
         borderColor: "rgba(255,99,132,1)",
         borderWidth: 1,
+      },
+    ],
+  };
+
+  const investmentCategoryData = {
+    labels: investments.map((investment) => investment.category),
+    datasets: [
+      {
+        label: "Investment Amount ($)",
+        data: investments.map((investment) => investment.amount),
+        backgroundColor: ["#36A2EB", "#FF6384", "#4CAF50", "#FFC107"],
+        hoverBackgroundColor: ["#36A2EB", "#FF6384", "#4CAF50", "#FFC107"],
       },
     ],
   };
@@ -314,6 +334,18 @@ const Dashboard = () => {
                 <p>No data available for recurring transactions.</p>
               )}
             </div>
+            <div
+              className="chart-wrapper"
+              style={{
+                backgroundColor: "var(--inputBg)",
+                border: "1px solid var(--border)",
+                padding: "20px",
+              }}
+            >
+              <h3>Investment Portfolio Distribution</h3>
+              {investments.length > 0 ? <Pie data={investmentCategoryData} /> : <p>No investment data available.</p>}
+            </div>
+
           </div>
 
           {/* Display Filtered Financial Data */}
