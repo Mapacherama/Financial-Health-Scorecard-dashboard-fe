@@ -93,8 +93,8 @@ const Dashboard = () => {
         const savingsRateResponse = await axios.get("http://127.0.0.1:5000/api/savings_rate");
         setSavingsRate(savingsRateResponse.data);
 
-        const growthResponse = await axios.get("http://127.0.0.1:5000/api/compound_growth");
-        setGrowthData(growthResponse.data.saved_growths);
+        // const growthResponse = await axios.get("http://127.0.0.1:5000/api/compound_growth");
+        // setGrowthData(growthResponse.data.saved_growths);
 
         const investmentResponse = await axios.get("http://127.0.0.1:5000/api/investment_portfolio");
         setInvestments(investmentResponse.data.investments);
