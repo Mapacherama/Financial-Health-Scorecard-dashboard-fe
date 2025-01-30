@@ -98,7 +98,8 @@ const Dashboard = () => {
             'Content-Type': 'application/json'
           }
         });
-        setGrowthData(growthResponse.data.saved_growths);
+        
+        setGrowthData(growthResponse.data.growth);
 
         const investmentResponse = await axios.get("http://127.0.0.1:5000/api/investment_portfolio");
         setInvestments(investmentResponse.data.investments);
@@ -415,7 +416,6 @@ const Dashboard = () => {
               )}
             </div>
           </div>
-
           {/* Display Filtered Financial Data */}
           <div
             className="financial-data-container"
