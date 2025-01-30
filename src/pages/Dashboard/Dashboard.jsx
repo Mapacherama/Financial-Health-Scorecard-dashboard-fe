@@ -216,6 +216,19 @@ const Dashboard = () => {
     ],
   };
 
+  const growthChartData = {
+    labels: growthData.length > 0 ? growthData.map((item) => `Year ${item.year}`) : ["No Data"],
+    datasets: [
+      {
+        label: "Compound Growth ($)",
+        data: growthData.length > 0 ? growthData.map((item) => item.value) : [0],
+        borderColor: "rgba(153, 102, 255, 1)",
+        backgroundColor: "rgba(153, 102, 255, 0.2)",
+        tension: 0.4,
+      },
+    ],
+  };
+
   return (
     <div
       className="dashboard-container"
@@ -258,6 +271,48 @@ const Dashboard = () => {
               </p>
             ) : (
               <p>No data available for savings rate.</p>
+            )}
+          </div>
+
+          {/* Trends Chart */}
+          <div
+            className="chart-wrapper"
+            style={{
+              backgroundColor: "var(--inputBg)",
+              border: "1px solid var(--border)",
+              padding: "20px",
+              marginBottom: "20px",
+              marginTop: "20px",
+              borderRadius: "8px"
+            }}
+          >
+            <h3>Monthly Trends</h3>
+            {trends.length > 0 ? (
+              <Line
+                data={trendsData}
+                options={{
+                  responsive: true,
+                  plugins: {
+                    legend: {
+                      labels: {
+                        color: "var(--text)"
+                      }
+                    }
+                  },
+                  scales: {
+                    y: {
+                      ticks: { color: "var(--text)" },
+                      grid: { color: "var(--border)" }
+                    },
+                    x: {
+                      ticks: { color: "var(--text)" },
+                      grid: { color: "var(--border)" }
+                    }
+                  }
+                }}
+              />
+            ) : (
+              <p>No trend data available</p>
             )}
           </div>
 
@@ -350,6 +405,15 @@ const Dashboard = () => {
               {investments.length > 0 ? <Pie data={investmentCategoryData} /> : <p>No investment data available.</p>}
             </div>
 
+            {/* Compound Growth Chart */}
+            <div className="chart-wrapper" style={{ backgroundColor: "var(--inputBg)", border: "1px solid var(--border)", padding: "20px", marginBottom: "20px", borderRadius: "8px" }}>
+              <h3>Compound Growth Over Time</h3>
+              {growthData.length > 0 ? (
+                <Line data={growthChartData} options={{ responsive: true, plugins: { legend: { labels: { color: "var(--text)" } } }, scales: { y: { ticks: { color: "var(--text)", callback: (value) => `$${value.toLocaleString()}` }, grid: { color: "var(--border)" } }, x: { ticks: { color: "var(--text)" }, grid: { color: "var(--border)" } } } }} />
+              ) : (
+                <p style={{ textAlign: "center", color: "var(--text)" }}>No growth data available</p>
+              )}
+            </div>
           </div>
 
           {/* Display Filtered Financial Data */}
