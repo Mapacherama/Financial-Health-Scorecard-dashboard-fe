@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useTheme } from "./context/ThemeContext";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Reports from "./pages/Reports/Reports";
@@ -28,6 +29,7 @@ const App: React.FC = () => {
             <Route path="/reports" element={<Reports />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
+          <Footer />
         </main>
       </div>
     </Router>

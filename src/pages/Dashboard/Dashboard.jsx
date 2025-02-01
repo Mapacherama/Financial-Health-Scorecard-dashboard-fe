@@ -34,9 +34,9 @@ ChartJS.register(
 
 const Dashboard = () => {
   const [financialData, setFinancialData] = useState([]);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [category, setCategory] = useState("");
+  const [startDate] = useState(null);
+  const [endDate] = useState(null);
+  const [category] = useState("");
   const [summary, setSummary] = useState(null);
   const [trends, setTrends] = useState([]);
   const [topTransactions, setTopTransactions] = useState(null);
